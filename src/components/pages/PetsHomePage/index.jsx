@@ -5,6 +5,9 @@ import {PetItem} from '../../pet-item';
 import PetsOrderContext from "../../../context/petsOrderContext";
 import {Search} from '../../search'
 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useHistory } from "react-router-dom";
+
 export const PetsHomePage = () => {
 
   const [pets, setPets] = useState([]);
@@ -14,8 +17,24 @@ export const PetsHomePage = () => {
 
   const globalState = useContext(PetsOrderContext);
 
+  const history = useHistory();
+
+  //check if user is logged in
   useEffect(
     () => {
+      
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          history.push('/login');
+        }
+      })
+    }, []
+  );
+
+  useEffect(
+    () => {
+
       getPets();
     }, []
   );
